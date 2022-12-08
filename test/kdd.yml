@@ -1,0 +1,32 @@
+data_dir: '../../TEAP/data'
+dtype: 'kdd17'
+batch_size: 64
+n_lag: 1
+n_support: 10
+n_classes: 2
+window_sizes: [15]
+
+feature_size: 11  
+embed_size: 32
+num_layers: 1
+drop_rate: 0.1
+inner_lr: 1.0
+task_type : "classification"
+# param_l2_lambda: 0.0  # if 0.0 then no 
+# inner_lr_schedular_gamma: 0.9
+
+exp_name: 'kdd17_0'
+log_dir: './logging'
+total_steps: 2
+n_inner_step: 2
+n_valid_step: 2
+every_valid_step: 2  # 0 for valid after all training
+beta: 0.001  
+gamma: 1.0e-8 
+lambda1: 1.0e-8 
+lambda2: 0.1
+outer_lr: 1.0e-3
+clip_value: 0.1
+device: 'cuda'
+print_step: 1
+test_window_size: 15
