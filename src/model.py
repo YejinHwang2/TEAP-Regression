@@ -40,6 +40,7 @@ class LSTMAttention(nn.Module):
         else:
             return normed_context, None
 
+# TCN: https://github.com/locuslab/TCN
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
@@ -97,6 +98,8 @@ class TemporalConvNet(nn.Module):
 
     def forward(self, x):
         return self.network(x)
+
+# SCI-Net: https://github.com/cure-lab/SCINet/blob/main/models/SCINet.py
 
 class Splitting(nn.Module):
     def __init__(self):
