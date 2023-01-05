@@ -26,34 +26,44 @@ class ARGProcessor():
         }
         return cls_kwargs
 
-class MetricRecorder(nn.Module):
+class RegressionMetricTaskRecorder(nn.Module):
     def __init__(self):
         super().__init__()
         cs = tm.MetricCollection({
-            'Support_Accuracy': tm.MeanMetric(), 
-            'Support_Loss': tm.MeanMetric(),
-            'Query_Accuracy': tm.Accuracy(),
-            'Query_Loss': tm.MeanMetric()
+            'Support_MSE': tm.MeanSquaredError(), 
+            'Support_MAE': tm.MeanAbsoluteError(),
+            'Support_MAPE': tm.MeanAbsolutePercentageError(),
+            'Query_MSE': tm.MeanSquaredError(), 
+            'Query_MAE': tm.MeanAbsoluteError(),
+            'Query_MAPE': tm.MeanAbsolutePercentageError(),
         })
-        # cs_query = tm.MetricCollection({
-        #     'Accuracy': tm.Accuracy(), 
-        #     'Precision': tm.Precision(num_classes=2, average=None), 
-        #     'Recall': tm.Recall(num_classes=2, average=None), 
-        #     'Loss': tm.SumMetric(),
-        # })
+        
+        self.metrics = cs.clone()
+        
+    @property
+    def keys(self):
+        return list(self.metrics.keys())
+
+
+class RegressionMetricRecorder(nn.Module):
+    def __init__(self):
+        super().__init__()
+        cs = tm.MetricCollection({
+            'Support_MSE': tm.MeanMetric(), 
+            'Support_MAE': tm.MeanMetric(),
+            'Support_MAPE': tm.MeanMetric(),
+            'Query_MSE': tm.MeanMetric(), 
+            'Query_MAE': tm.MeanMetric(),
+            'Query_MAPE': tm.MeanMetric(),
+        })
+
         self.metrics = cs.clone()
     @property
     def keys(self):
         return list(self.metrics.keys())
     
-    def update(self, key, scores=None | torch.FloatTensor, targets=None | torch.LongTensor):
-        if key == 'Query_Accuracy':
-            if targets is None:
-                raise KeyError('Must insert `targets` to calculate accuracy.')
-            self.metrics[key].update(scores, targets)
-            
-        else:
-            self.metrics[key].update(scores)
+    def update(self, key, scores):
+        self.metrics[key].update(scores)
             
     def compute(self, prefix: str):
         results = {}
